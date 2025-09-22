@@ -34,3 +34,13 @@ jobs:
         tags: ${{ secrets.DOCKER_USERNAME }}/juice-shop:latest
         cache-from: type=gha
         cache-to: type=gha,mode=max
+
+    - name: Update Docker Hub description
+      if: github.ref == 'refs/heads/master'
+      run: |
+        README=$(cat README.md | jq -Rs .)
+        curl -u ${{ secrets.DOCKER_USERNAME }}:${{ secrets.DOCKER_PASSWORD }} \
+          -X PATCH \
+          -H "Content-Type: application/json" \
+          -d "{\"full_description\": $README}" \
+          https://hub.docker.com/v2/repositories/${{ secrets.DOCKER_USERNAME }}/juice-shop/
