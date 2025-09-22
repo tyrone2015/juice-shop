@@ -22,7 +22,8 @@ RUN npm run sbom
 FROM gcr.io/distroless/nodejs22-debian12
 ARG BUILD_DATE
 ARG VCS_REF
-LABEL maintainer="Bjoern Kimminich <bjoern.kimminich@owasp.org>" \
+LABEL maintainer="tyrone2015" \
+    description="OWASP Juice Shop - 漏洞练习平台，自动构建与推送 Docker 镜像" \
     org.opencontainers.image.title="OWASP Juice Shop" \
     org.opencontainers.image.description="Probably the most modern and sophisticated insecure web application" \
     org.opencontainers.image.authors="Bjoern Kimminich <bjoern.kimminich@owasp.org>" \
@@ -33,7 +34,8 @@ LABEL maintainer="Bjoern Kimminich <bjoern.kimminich@owasp.org>" \
     org.opencontainers.image.url="https://owasp-juice.shop" \
     org.opencontainers.image.source="https://github.com/juice-shop/juice-shop" \
     org.opencontainers.image.revision=$VCS_REF \
-    org.opencontainers.image.created=$BUILD_DATE
+    org.opencontainers.image.created=$BUILD_DATE \
+    description="OWASP Juice Shop，集成API覆盖率统计功能，支持自动化测试覆盖率分析"
 WORKDIR /juice-shop
 COPY --from=installer --chown=65532:0 /juice-shop .
 USER 65532

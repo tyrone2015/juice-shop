@@ -239,3 +239,20 @@ OWASP Juice Shop and any contributions are Copyright © by Bjoern Kimminich & th
 2014-2025.
 
 ![Juice Shop Logo](https://raw.githubusercontent.com/juice-shop/juice-shop/master/frontend/src/assets/public/images/JuiceShop_Logo_400px.png)
+
+## API接口覆盖率统计 / API Coverage Statistics
+
+本项目新增了API覆盖率统计功能，便于分析测试和爬虫的有效性。
+This project adds API coverage statistics to help analyze the effectiveness of testing and crawling.
+
+- 访问 `/api-coverage` 可获取所有API端点的访问覆盖率报告（总数、已访问数、百分比、详细清单）。
+  Access `/api-coverage` to get a coverage report of all API endpoints (total, visited, percentage, detailed list).
+- 访问 `/api-coverage/reset` (GET) 可重置统计数据，适用于自动化测试多轮分析。
+  Access `/api-coverage/reset` (GET) to reset coverage data, suitable for multiple rounds of automated testing.
+- 仅统计真实API，自动过滤静态资源，数据更准确。
+  Only real APIs are counted, static resources are automatically filtered for more accurate data.
+- 该功能为低侵入实现，不影响原有业务逻辑。
+  This feature is implemented with minimal intrusion and does not affect existing business logic.
+
+覆盖率报告有助于发现未被访问的API，提升测试全面性和安全性。
+Coverage reports help identify unvisited APIs and improve the completeness and security of testing.
