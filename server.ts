@@ -132,6 +132,57 @@ const server = new http.Server(app)
 // errorhandler requires us from overwriting a string property on it's module which is a big no-no with esmodules :/
 const errorhandler = require('errorhandler')
 
+// --- API Coverage Tracking ---
+const apiCoverage = {
+  visited: new Set(),
+  getAllEndpoints() {
+    const endpoints = []
+    app._router.stack.forEach((layer) => {
+      if (layer.route && layer.route.path) {
+        const methods = Object.keys(layer.route.methods)
+        methods.forEach((method) => {
+          endpoints.push({ method: method.toUpperCase(), path: layer.route.path })
+        })
+      }
+    })
+    return endpoints
+  },
+  reset() {
+    this.visited.clear()
+  }
+}
+
+// 仅记录allEndpoints中定义的API访问，过滤静态资源
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const allEndpoints = apiCoverage.getAllEndpoints()
+  const reqKey = `${req.method.toUpperCase()} ${req.route?.path || req.path}`
+  if (allEndpoints.some(e => e.method === req.method.toUpperCase() && e.path === (req.route?.path || req.path))) {
+    apiCoverage.visited.add(reqKey)
+  }
+  next()
+})
+
+// 覆盖率报告接口
+app.get('/api-coverage', (req, res) => {
+  const allEndpoints = apiCoverage.getAllEndpoints()
+  const visitedEndpoints = Array.from(apiCoverage.visited)
+  const total = allEndpoints.length
+  const covered = visitedEndpoints.length
+  const percent = total > 0 ? ((covered / total) * 100).toFixed(2) : '0.00'
+  res.json({
+    total,
+    covered,
+    percent,
+    allEndpoints,
+    visitedEndpoints
+  })
+})
+
+// 重置访问记录接口
+app.get('/api-coverage/reset', (req: Request, res: Response) => {
+  apiCoverage.reset()
+  res.json({ message: 'API coverage data reset.' })
+})
 const startTime = Date.now()
 
 const swaggerDocument = yaml.load(fs.readFileSync('./swagger.yml', 'utf8'))

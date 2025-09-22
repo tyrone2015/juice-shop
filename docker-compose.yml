@@ -1,0 +1,12 @@
+services:
+  sut:
+    build: ./test/smoke/
+    depends_on:
+      - app
+  app:
+    build:
+      context: ./
+      dockerfile: Dockerfile   # 用你改过的 Dockerfile
+    ports:
+      - "3100:3000"
+
